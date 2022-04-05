@@ -38,28 +38,60 @@ def load_data(filename):
 
     evidence should be a list of lists, where each list contains the
     following values, in order:
-        - Administrative, an integer
-        - Administrative_Duration, a floating point number
-        - Informational, an integer
-        - Informational_Duration, a floating point number
-        - ProductRelated, an integer
-        - ProductRelated_Duration, a floating point number
-        - BounceRates, a floating point number
-        - ExitRates, a floating point number
-        - PageValues, a floating point number
-        - SpecialDay, a floating point number
-        - Month, an index from 0 (January) to 11 (December)
-        - OperatingSystems, an integer
-        - Browser, an integer
-        - Region, an integer
-        - TrafficType, an integer
-        - VisitorType, an integer 0 (not returning) or 1 (returning)
-        - Weekend, an integer 0 (if false) or 1 (if true)
+        0- Administrative, an integer
+        1- Administrative_Duration, a floating point number
+        2- Informational, an integer
+        3- Informational_Duration, a floating point number
+        4- ProductRelated, an integer
+        5- ProductRelated_Duration, a floating point number
+        6- BounceRates, a floating point number
+        7- ExitRates, a floating point number
+        8- PageValues, a floating point number
+        9- SpecialDay, a floating point number
+        10- Month, an index from 0 (January) to 11 (December)
+        11- OperatingSystems, an integer
+        12- Browser, an integer
+        13- Region, an integer
+        14- TrafficType, an integer
+        15- VisitorType, an integer 0 (not returning) or 1 (returning)
+        16- Weekend, an integer 0 (if false) or 1 (if true)
 
     labels should be the corresponding list of labels, where each label
     is 1 if Revenue is true, and 0 otherwise.
     """
-    raise NotImplementedError
+    evidence = list()
+    labels = list()
+    months = ['jan', 'feb', 'mar', 'apr', 'may', 'june', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec']
+
+    with open(filename, newline='') as f:
+        reader = csv.reader(f)
+        next(reader)
+        for row in reader:
+            evidence.append([
+                int(row[0]),
+                float(row[1]),
+                int(row[2]),
+                float(row[3]),
+                int(row[4]),
+                float(row[5]),
+                float(row[6]),
+                float(row[7]),
+                float(row[8]),
+                float(row[9]),
+                months.index(row[10].lower()),
+                int(row[11]),
+                int(row[12]),
+                int(row[13]),
+                int(row[14]),
+                0 if row[15].lower() != 'returning_visitor' else 1,
+                0 if row[16].lower() == 'false' else 1
+            ])
+            labels.append(
+                0 if row[17].lower() == 'false' else 1
+
+            )
+
+    return (evidence, labels)
 
 
 def train_model(evidence, labels):
